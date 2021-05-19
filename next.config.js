@@ -1,5 +1,5 @@
 module.exports = {
   env: {
-    URL: "your mongo db url",
+    URL: "your mongodb url",
   },
 };

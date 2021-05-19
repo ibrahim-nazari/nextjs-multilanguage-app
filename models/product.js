@@ -5,10 +5,11 @@ const info = mongoose.Schema({
   fa: String,
   en: String,
 });
-let product = new Schema({
+let product = Schema({
   title: info,
   shortDescription: info,
   longDescription: info,
+  price: { type: Number },
   time: {
     type: Date,
     default: Date.now,

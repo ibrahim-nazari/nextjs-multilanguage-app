@@ -9,18 +9,25 @@ export default function App() {
   const [product, setProduct] = useState(null);
   useEffect(async () => {
     let res = await axios.get("/api/product");
-    console.log(res.data[0]);
     setProduct(res.data[0]);
   }, []);
 
-  const { local, language, changeLanguage } = useContext(Context);
+  const {
+    local,
+    language,
+    changeLanguage,
+    changeCurrency,
+    rate,
+    currentCurrency,
+  } = useContext(Context);
+  const getPrice = (p) => ` ${(p * rate).toFixed(0)} ${currentCurrency}`;
   return (
     <IntlProvider messages={language} locale={local} defaultLocale="en">
       <div
         className={styles.container}
         style={{ direction: local == "fa" ? "rtl" : undefined }}
       >
-        <div style={{ textAlign: "right" }}>
+        <div style={{ textAlign: "right", direction: "ltr" }}>
           <select onChange={(e) => changeLanguage(e.target.value)}>
             <option value="en">
               <FormattedMessage
@@ -37,36 +44,39 @@ export default function App() {
               />
             </option>
           </select>
+          <select onChange={(e) => changeCurrency(e.target.value)}>
+            <option value="USD">USD</option>
+            <option value="AED">AED</option>
+          </select>
         </div>
         <div className={styles.product}>
           <div className={styles.top}>
             <img src="/acer.jpg" className={styles.image} />
             <div className={styles.shortDC}>
               <div>
-                <h2>
-                  <FormattedMessage
-                    defaultMessage={product?.title[local]}
-                    id="title1"
-                  />
-                </h2>
+                <h2>{product?.title[local]}</h2>
                 <div>
-                  <div>
-                    <FormattedMessage
-                      defaultMessage={product?.shortDescription[local]}
-                      id="description1"
-                      values={{
-                        p: (word) => <p>{word}</p>,
-                        h4: (word) => <h4>{word}</h4>,
-                        ul: (word) => <ul>{word}</ul>,
-                        li: (word) => <li>{word}</li>,
-                      }}
-                    />
-                  </div>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: product?.shortDescription[local],
+                    }}
+                  ></div>
                 </div>
               </div>
               <div style={{ marginTop: "20px" }}>
                 <div style={{ marginBottom: "10px" }}>
-                  <strong>Price: $445</strong>
+                  <strong>
+                    <FormattedMessage defaultMessage={"Price"} id="PRICE" />:
+                    <div
+                      style={{
+                        direction: "ltr",
+                        display: "inline-block",
+                        padding: "8px",
+                      }}
+                    >
+                      {getPrice(product?.price)}
+                    </div>
+                  </strong>
                 </div>
                 <button>
                   <FormattedMessage
@@ -77,16 +87,12 @@ export default function App() {
               </div>
             </div>
           </div>
-          <div className={styles.bottom}>
-            <FormattedMessage
-              defaultMessage={product?.longDescription[local]}
-              values={{
-                p: (word) => <p>{word}</p>,
-                h4: (word) => <h4>{word}</h4>,
-              }}
-              id="description1"
-            />
-          </div>
+          <div
+            className={styles.bottom}
+            dangerouslySetInnerHTML={{
+              __html: product?.longDescription[local],
+            }}
+          ></div>
         </div>
       </div>
     </IntlProvider>

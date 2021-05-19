@@ -44,13 +44,12 @@ export default function Insert() {
           
           As of 18th May 2021, Lenovo IdeaPad 330 price in India starts at Rs. 16,990.</p>`,
       },
+      price: 760,
     };
+
     try {
       let res = await axios.post("/api/product", product);
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }, []);
   return (
     <div className={styles.container}>
